@@ -89,4 +89,4 @@ def index():
 
 if __name__ == '__main__':
     getdata(city_list)
-    app.run()
+    app.run(debug=True)
