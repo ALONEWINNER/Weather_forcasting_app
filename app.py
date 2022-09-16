@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+from flask_cors import CORS,cross_origin
 from flask_sqlalchemy import SQLAlchemy
 #70ShreeHari07
 import sys
@@ -32,7 +33,8 @@ city_list=['Agra Uttar Pradesh','Aligarh Uttar Pradesh','Allahabad  Uttar Prades
 'Gautam Buddha Nagar Uttar Pradesh','Ghaziabad Uttar Pradesh','Ghazipur Uttar Pradesh','Gonda Uttar Pradesh','Gorakhpur Uttar Pradesh',
 'Hamirpur Uttar Pradesh','Hardoi Uttar Pradesh']
 
-
+@app.route('/user',methods=['POST','GET']) # route to user
+@cross_origin()
 def getdata(city_list):
     final_data = []
     for i in range(len(city_list)):
@@ -76,8 +78,8 @@ class User(db.Model):
 
 db.create_all()
 
-
-@app.route('/')
+@app.route('/',methods=['GET'])  # route to display the home page
+@cross_origin()
 def index():
     users = User.query
     return render_template('bootstrap_table.html', title='Bootstrap Table',
