@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Date & Time</th>
+        <th>District & State </th>
+        <th>Current Temperature</th>
+        <th>Weather Condition</th>
+        <th>Today's Maximum Tempreture</th>
+        <th>Today's Minimum Tempreture</th>
+        <th>Pressure</th>
+        <th>Humidity</th>
+        <th>Wind Speed</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr>
+          <td>{{ user.date_time }}</td>
+          <td>{{ user.District_state }}</td>
+          <td>{{ user.current_temp_city }}</td>
+          <td>{{ user.weather_desc }}</td>
+          <td>{{ user.max_temp_city}}</td>
+          <td>{{ user.min_temp_city }}</td>
+          <td>{{ user.pressure }}</td>
+          <td>{{ user.humidity }}</td>
+          <td>{{ user.wind_speed }}
+          <td>{{ user.country }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        columns: [
+          null,
+          null,
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+          {orderable: false, searchable: false},
+
+          null],
+      });
+    });
+  </script>
+{% endblock %}
