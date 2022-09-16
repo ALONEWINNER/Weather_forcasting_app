@@ -18,8 +18,8 @@ user_api="e84e9d7d2b7f98a86fbe7c2bd399841d"
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-        'sqlite:///' + os.path.join(basedir, 'mydata.db')
+app.config['SQLALCHEMY_DATABASE_URI'] ='postgres://blllfsehztlrjl:f90f728d1cda930961938ec32831bb187a535922b3293d8abf76103fd1f38df8@ec2-54-147-36-107.compute-1.amazonaws.com:5432/deubd6aaohtuuj'
+#app.config['SQLALCHEMY_DATABASE_URI'] =\'sqlite:///' + os.path.join(basedir, 'mydata.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
