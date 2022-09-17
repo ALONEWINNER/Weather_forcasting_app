@@ -1,7 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,request
 from flask_cors import CORS,cross_origin
 from flask_sqlalchemy import SQLAlchemy
 #70ShreeHari07
+from flask import current_app
+from flask_cors import CORS,cross_origin
 import sys
 from basic_table import db, User
 import requests
@@ -33,35 +35,37 @@ city_list=['Agra Uttar Pradesh','Aligarh Uttar Pradesh','Allahabad  Uttar Prades
 'Gautam Buddha Nagar Uttar Pradesh','Ghaziabad Uttar Pradesh','Ghazipur Uttar Pradesh','Gonda Uttar Pradesh','Gorakhpur Uttar Pradesh',
 'Hamirpur Uttar Pradesh','Hardoi Uttar Pradesh']
 
-@app.route('/user',methods=['POST','GET']) # route to user
+
+@app.route('/',methods=['POST','GET']) # route to show the review comments in a web UI
 @cross_origin()
 def getdata(city_list):
-    final_data = []
-    for i in range(len(city_list)):
-        url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(city_list[i]) + '?format=json'
-        response = requests.get(url).json()
-        LAT = (response[0]["lat"])
-        LON = (response[0]["lon"])
-        complete_api_link = "https://api.openweathermap.org/data/2.5/weather?lat=" + LAT + "&lon=" + LON + "&appid=" + user_api
-        api_link = requests.get(complete_api_link)
-        api_data = api_link.json()
+     if request.method == 'GET':
+        final_data = []
+        for i in range(len(city_list)):
+            url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(city_list[i]) + '?format=json'
+            response = requests.get(url).json()
+            LAT = (response[0]["lat"])
+            LON = (response[0]["lon"])
+            complete_api_link = "https://api.openweathermap.org/data/2.5/weather?lat=" + LAT + "&lon=" + LON + "&appid=" + user_api
+            api_link = requests.get(complete_api_link)
+            api_data = api_link.json()
 
-        if api_data['cod'] == '404':
-            print("invlid city")
-        else:
-            db.session.commit()
-            user = User(current_temp_city=round(((api_data['main']['temp']) - 273.15), 2),
-                    weather_desc=str(api_data['weather'][0]['description']),
-                    max_temp_city=round(((api_data['main']['temp_max']) - 273.15), 2),
-                    min_temp_city=round(((api_data['main']['temp_min']) - 273.15), 2),
-                    pressure=(api_data['main']['pressure']),
-                    humidity=(str(api_data['main']['humidity']) + "%"),
-                    wind_speed=(str(api_data['wind']['speed']) + "Kmph"),
-                    District_state=str(city_list[i].upper()),
-                    country=str(api_data['sys']['country']),
-                    date_time=str(datetime.now().strftime("%d %b %Y | %I:%M:%S %p")))
-        db.session.add(user)
-    db.session.commit()
+            if api_data['cod'] == '404':
+                print("invlid city")
+            else:
+                db.session.commit()
+                user = User(current_temp_city=round(((api_data['main']['temp']) - 273.15), 2),
+                        weather_desc=str(api_data['weather'][0]['description']),
+                        max_temp_city=round(((api_data['main']['temp_max']) - 273.15), 2),
+                        min_temp_city=round(((api_data['main']['temp_min']) - 273.15), 2),
+                        pressure=(api_data['main']['pressure']),
+                        humidity=(str(api_data['main']['humidity']) + "%"),
+                        wind_speed=(str(api_data['wind']['speed']) + "Kmph"),
+                        District_state=str(city_list[i].upper()),
+                        country=str(api_data['sys']['country']),
+                        date_time=str(datetime.now().strftime("%d %b %Y | %I:%M:%S %p")))
+            db.session.add(user)
+        db.session.commit()
 
 
 class User(db.Model):
@@ -78,7 +82,8 @@ class User(db.Model):
 
 db.create_all()
 
-@app.route('/',methods=['GET'])  # route to display the home page
+
+@app.route('/',methods=['POST'])  # route to display the home page
 @cross_origin()
 def index():
     users = User.query
